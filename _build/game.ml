@@ -98,30 +98,41 @@ let check_collision (game : t) (piece_arr : int array array) (x : int) (y : int)
 		acc || b
 	) false coll_arr
 
-let print_board (game : t) =
-	let board = Array.copy game.field in 
+let remove_piece (game : t) = 
+	let board = game.field in
+	Array.iteri (fun y r -> 
+		Array.iteri (fun x e -> 
+			if e = 1 then (board. (y). (x) <- 0)
+		) r
+	) board 
+
+let draw_piece (game : t) = 
+	let board = game.field in 
 	let piece = Piece.get_piece_arr game.curr_piece in 
 	let currx = game.piece_pos_x in 
 	let curry = game.piece_pos_y in 
 
-	board. (0) <- Array.map (fun j -> if j = 1 then 0 else j) board. (0); 
-
-	let _ = Array.iteri (fun y r -> 
+	Array.iteri (fun y r -> 
 		Array.iteri (fun x e -> 
-			if (y + curry) >= 0 && (y + curry) < game.settings.field_height && 
+			if e = 1 && (y + curry) >= 0 && (y + curry) < game.settings.field_height && 
 			   (x + currx) >= 0 && (x + currx) < game.settings.field_width
 			then board. (y+curry). (x+currx) <- e
 			else ()
 		) r
-	) piece in 
+	) piece
+
+let print_board (game : t) =
+	remove_piece game;
+	draw_piece game;
 
 	Array.iter (fun r ->
 		Array.iter (fun e -> 
 			prerr_string ((string_of_int e) ^ " ")
 		) r;
 		prerr_endline " "
-	) board;
-	prerr_endline "-------------"
+	) game.field;
+	prerr_endline "-------------";
+	remove_piece game
 
 let rotate_piece (n : int) (game : t) = 
 	let piece' = Piece.rotate n game.curr_piece in 
@@ -157,21 +168,69 @@ let move_down (game : t) =
 	if coll then (game, false)
 	else ({game with piece_pos_x=currx; piece_pos_y=curry+1}, true)
 
-let fitness (game : t) = 0.
+let rec make_move_list (n : int) (move_f : int -> 'a) : 'a list =
+	if n = 0 then [] else
+	(make_move_list (n-1) move_f) @ [move_f (n-1)]
 
 let print_moves (game : t) = 
 	let piece = game.curr_piece in 
 	let currx = game.piece_pos_x in 
-	let curry = game.piece_pos_y in
 	let initx = game.init_piece_pos_x in
-	let inity = game.init_piece_pos_y in 
 	let offset = initx - currx in 
 
-	let move_list = if offset > 0 then List.init offset (fun _ -> "left")
-	else List.init -offset (fun _ -> "right") in
-	let rot_list = List.init (Piece.get_rot_no piece) (fun _ -> "turnright") in 
-
+	let move_list = if offset > 0 then make_move_list offset (fun _ -> "left")
+	else make_move_list (-offset) (fun _ -> "right") in
+	let rot_list = make_move_list (Piece.get_rot_no piece) (fun _ -> "turnright") in 
+	prerr_endline (
+		String.concat "," (rot_list @ move_list)
+	);
 	print_endline (
-		(String.concat "," rot_list) ^ 
-		(String.concat "," move_list)
+		String.concat "," (rot_list @ move_list)
 	)
+
+let compute_height (game : t) : float = 
+	let bit_game = Array.map (fun r -> 
+		Array.fold_left (fun b x -> 
+			if (b = 1) || (x >= 1) then 1 else 0
+		) 0 r
+	) game.field in 
+	float (Array.fold_left (fun sum i -> sum+i) 0 bit_game)
+
+let compute_holes (game : t) : float = 
+	let bit_hole = Array.init game.settings.field_width (fun _ -> false) in
+	let hole_counter = Array.fold_left (fun hole_count r -> 
+		let bit_row = Array.mapi (fun x e ->
+			if bit_hole. (x) then
+				(if e = 0 then 1 else 0)
+			else 
+				(if e > 0 then bit_hole. (x) <- true; 0)
+		) r in
+		let inc_count = Array.fold_left (fun row_count i ->
+			row_count + i
+		) 0 bit_row in
+		hole_count + inc_count
+	) 0 game.field in
+	float hole_counter
+
+let compute_lines (game : t) : float = 
+	let lines = Array.fold_left (fun line_count r -> 
+		let count_inc = Array.fold_left (fun line e ->
+			if e > 0 then line else 0
+		) 1 r in
+		line_count + count_inc
+	) 0 game.field in
+	float lines
+
+let compute_bumpy (game : t) : float = 
+	let heights = Array.init game.settings.field_width (fun _ -> 0) in
+	let _ = Array.iteri (fun y r -> 
+		Array.iteri (fun x e -> 
+			let curr_h = game.settings.field_height - y in 
+			if e > 0 && heights. (x) = 0 then heights. (x) <- curr_h
+		) r
+	) game.field in
+	let bumpy = Array.fold_left (fun (prev, bsum) h ->
+		(h, bsum + (abs (prev - h)))
+	) (heights. (0), 0) heights in 
+	let normalized_bumpy = (float (snd bumpy)) /. (float (game.settings.field_width - 1)) in
+	normalized_bumpy

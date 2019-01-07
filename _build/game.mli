@@ -40,8 +40,18 @@ val move_down : t -> (t * bool)
 
 val rotate_piece : int -> t -> (t * bool)
 
-val fitness : t -> float
-
 val print_board : t -> unit
 
 val print_moves : t -> unit
+
+val compute_holes : t -> float
+
+val compute_lines : t -> float
+
+val compute_height : t -> float
+
+val compute_bumpy : t -> float
+
+val remove_piece : t -> unit
+
+val draw_piece : t -> unit

@@ -15,3 +15,5 @@ val get_piece_type : string -> t
 val get_piece_arr : t -> int array array
 
 val get_rot_no : t -> int
+
+val unknown_piece : t

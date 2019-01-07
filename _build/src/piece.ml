@@ -44,8 +44,6 @@ let rotate (n : int) (piece : t) =
 	| Z x -> Z (x+n mod 4)
 	end
 
-let unknown_piece = Unknown
-
 let rotate_right (piece_arr : int array array) = 
 	let n = Array.length piece_arr in
 	let transpose = Array.init n (fun i -> 
