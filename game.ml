@@ -185,7 +185,7 @@ let print_moves (game : t) =
 		String.concat "," (rot_list @ move_list)
 	);
 	print_endline (
-		String.concat "," (rot_list @ move_list)
+		String.concat "," ((rot_list @ move_list) @ ["drop"])
 	)
 
 let compute_height (game : t) : float = 
