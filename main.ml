@@ -14,7 +14,7 @@ let process_update (game : Game.t) (l : string list) : Game.t =
 		| "round" -> game
 		| "this_piece_type" -> Game.update_piece game value
 		| "next_piece_type" -> Game.update_next_piece game value
-		| "this_piece_position" -> game
+		| "this_piece_position" -> Game.update_piece_pos game value
 		| _ -> failwith "Invalid update attribute given with type `game`"
 		end
 	| [player; attr; value] -> 
