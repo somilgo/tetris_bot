@@ -35,17 +35,21 @@ let fitness (game : Game.t) : float =
 	let open Game in 
     remove_piece game;
     draw_piece game;
+    let height = compute_agg_height game in 
+    let lines = compute_lines game in 
     let out = 
-    	((-. 1.0) *. compute_height game) +.
+    	((-. 1.0) *. height) +.
     	((-. 1.0) *. compute_bumpy game) +.  
-    	((+. 1.0) *. compute_lines game *. compute_lines game)  +.
-    	((-. 1.5) *. compute_holes game)
+    	(1.0 *. lines ** 2.0)  +.
+    	((-. 2.0) *. compute_holes game)
     in
     remove_piece game;
     out
 
 let lookahead_fitness (game : Game.t) : float = 
     let open Game in 
+    remove_piece game;
+    draw_piece game;
     if game.next_piece = Piece.unknown_piece then 0. else
     let solid_board = Array.map (fun r ->
         Array.map (fun e ->
@@ -61,11 +65,12 @@ let lookahead_fitness (game : Game.t) : float =
         init_piece_pos_x = 3;
         init_piece_pos_y = -1;
     } in
-    let _, best_fitness = find_best lookahead_game fitness in 
+    let bg, best_fitness = find_best lookahead_game fitness in 
+    
     best_fitness
 
 let aggregate_fitness_function (game : Game.t) : float = 
-	(fitness game) +. (lookahead_fitness game)
+	(lookahead_fitness game)
 
 let make_move (game : Game.t) = 
 	let best_game = find_best game aggregate_fitness_function in 

@@ -4,17 +4,17 @@
 # Target: bot.mli.depends, tags: { extension:mli, file:bot.mli, ocaml, ocamldep, quiet }
 /home/somil/.opam/4.04.1/bin/ocamldep.opt -modules bot.mli > bot.mli.depends # cached
 # Target: game.mli.depends, tags: { extension:mli, file:game.mli, ocaml, ocamldep, quiet }
-/home/somil/.opam/4.04.1/bin/ocamldep.opt -modules game.mli > game.mli.depends # cached
+/home/somil/.opam/4.04.1/bin/ocamldep.opt -modules game.mli > game.mli.depends
 # Target: piece.mli.depends, tags: { extension:mli, file:piece.mli, ocaml, ocamldep, quiet }
 /home/somil/.opam/4.04.1/bin/ocamldep.opt -modules piece.mli > piece.mli.depends # cached
 # Target: piece.cmi, tags: { byte, compile, extension:mli, file:piece.mli, interf, ocaml, quiet }
 /home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o piece.cmi piece.mli # cached
 # Target: game.cmi, tags: { byte, compile, extension:mli, file:game.mli, interf, ocaml, quiet }
-/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o game.cmi game.mli # cached
+/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o game.cmi game.mli
 # Target: bot.cmi, tags: { byte, compile, extension:mli, file:bot.mli, interf, ocaml, quiet }
-/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o bot.cmi bot.mli # cached
+/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o bot.cmi bot.mli
 # Target: main.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet }
-/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o main.cmo main.ml # cached
+/home/somil/.opam/4.04.1/bin/ocamlc.opt -c -o main.cmo main.ml
 # Target: bot.ml.depends, tags: { extension:ml, file:bot.ml, ocaml, ocamldep, quiet }
 /home/somil/.opam/4.04.1/bin/ocamldep.opt -modules bot.ml > bot.ml.depends
 # Target: game.ml.depends, tags: { extension:ml, file:game.ml, ocaml, ocamldep, quiet }
@@ -28,7 +28,7 @@
 # Target: bot.cmx, tags: { compile, extension:cmx, extension:ml, file:bot.cmx, file:bot.ml, implem, native, ocaml, quiet }
 /home/somil/.opam/4.04.1/bin/ocamlopt.opt -c -o bot.cmx bot.ml
 # Target: main.cmx, tags: { compile, extension:cmx, extension:ml, file:main.cmx, file:main.ml, implem, native, ocaml, quiet }
-/home/somil/.opam/4.04.1/bin/ocamlopt.opt -c -o main.cmx main.ml # cached
+/home/somil/.opam/4.04.1/bin/ocamlopt.opt -c -o main.cmx main.ml
 # Target: main.native, tags: { dont_link_with, extension:native, file:main.native, link, native, ocaml, program, quiet }
 /home/somil/.opam/4.04.1/bin/ocamlopt.opt unix.cmxa piece.cmx game.cmx bot.cmx main.cmx -o main.native
 # Compilation successful.

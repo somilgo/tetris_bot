@@ -35,11 +35,13 @@ let fitness (game : Game.t) : float =
 	let open Game in 
     remove_piece game;
     draw_piece game;
+    let height = compute_agg_height game in 
+    let lines = compute_lines game in 
     let out = 
-    	((-. 1.0) *. compute_height game) +.
-    	((-. 1.0) *. compute_bumpy game) +.  
-    	((+. 1.0) *. compute_lines game *. compute_lines game)  +.
-    	((-. 1.5) *. compute_holes game)
+    	((-. 0.510066) *. height) +.
+    	((-. 0.184483) *. compute_bumpy game) +.  
+    	(0.760666 *. (lines ** 2.0))  +.
+    	((-. 0.35663) *. compute_holes game)
     in
     remove_piece game;
     out

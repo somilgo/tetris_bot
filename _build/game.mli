@@ -50,6 +50,8 @@ val compute_lines : t -> float
 
 val compute_height : t -> float
 
+val compute_agg_height : t -> float
+
 val compute_bumpy : t -> float
 
 val remove_piece : t -> unit

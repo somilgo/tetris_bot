@@ -196,10 +196,24 @@ let compute_height (game : t) : float =
 	) game.field in 
 	float (Array.fold_left (fun sum i -> sum+i) 0 bit_game)
 
+let compute_agg_height (game : t) : float = 
+	let heights = Array.init game.settings.field_width (fun _ -> 0) in
+	let _ = Array.iteri (fun y r -> 
+		Array.iteri (fun x e -> 
+			let curr_h = game.settings.field_height - y in 
+			if e > 0 && heights. (x) = 0 then heights. (x) <- curr_h
+		) r
+	) game.field in
+	let agg_height = Array.fold_left (fun tot h ->
+		tot + h
+	) 0 heights in 
+	float agg_height
+
 let compute_holes (game : t) : float = 
 	let bit_hole = Array.init game.settings.field_width (fun _ -> false) in
 	let hole_counter = Array.fold_left (fun hole_count r -> 
 		let bit_row = Array.mapi (fun x e ->
+
 			if bit_hole. (x) then
 				(if e = 0 then 1 else 0)
 			else 
@@ -231,6 +245,7 @@ let compute_bumpy (game : t) : float =
 	) game.field in
 	let bumpy = Array.fold_left (fun (prev, bsum) h ->
 		(h, bsum + (abs (prev - h)))
-	) (heights. (0), 0) heights in 
-	let normalized_bumpy = (float (snd bumpy)) /. (float (game.settings.field_width - 1)) in
-	normalized_bumpy
+	) (heights. (0), 0) heights in
+	float (snd bumpy) 
+	(* let normalized_bumpy = (float (snd bumpy)) /. (float (game.settings.field_width - 1)) in
+	normalized_bumpy *)
