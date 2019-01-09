@@ -188,13 +188,18 @@ let print_moves (game : t) =
 		String.concat "," ((rot_list @ move_list) @ ["drop"])
 	)
 
-let compute_height (game : t) : float = 
-	let bit_game = Array.map (fun r -> 
-		Array.fold_left (fun b x -> 
-			if (b = 1) || (x >= 1) then 1 else 0
-		) 0 r
-	) game.field in 
-	float (Array.fold_left (fun sum i -> sum+i) 0 bit_game)
+let compute_height (game : t) : float =
+	let heights = Array.init game.settings.field_width (fun _ -> 0) in
+	let _ = Array.iteri (fun y r -> 
+		Array.iteri (fun x e -> 
+			let curr_h = game.settings.field_height - y in 
+			if e > 0 && heights. (x) = 0 then heights. (x) <- curr_h
+		) r
+	) game.field in
+	let max_height = Array.fold_left (fun maxi h ->
+	    if maxi > h then maxi else h
+	) 0 heights in 
+	float (max_height)
 
 let compute_agg_height (game : t) : float = 
 	let heights = Array.init game.settings.field_width (fun _ -> 0) in
@@ -249,3 +254,6 @@ let compute_bumpy (game : t) : float =
 	float (snd bumpy) 
 	(* let normalized_bumpy = (float (snd bumpy)) /. (float (game.settings.field_width - 1)) in
 	normalized_bumpy *)
+
+let get_height (game : t) : int = 
+    game.settings.field_height

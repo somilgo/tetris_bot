@@ -57,3 +57,5 @@ val compute_bumpy : t -> float
 val remove_piece : t -> unit
 
 val draw_piece : t -> unit
+
+val get_height : t -> int 
